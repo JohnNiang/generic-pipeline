@@ -1,0 +1,16 @@
+domain: kubesphere.io
+layout:
+- go.kubebuilder.io/v3
+projectName: generic-pipeline
+repo: kubesphere.io/devops
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: kubesphere.io
+  group: devops
+  kind: Pipeline
+  path: kubesphere.io/devops/api/v1alpha4
+  version: v1alpha4
+version: "3"
