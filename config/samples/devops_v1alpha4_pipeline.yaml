@@ -3,4 +3,30 @@ kind: Pipeline
 metadata:
   name: pipeline-sample
 spec:
-  # TODO(user): Add fields here
+  event:
+    provider: github
+    filter:
+      pull_requests:
+        branches:
+          - main
+  jobs:
+    - name: build-apiserver
+      if: "branches == master"
+      runs-on: kubespheredev/builder-go:latest
+      steps:
+        - name: checkout
+          use: git-clone
+          with:
+            url: github.com/kubesphere/ks-devops
+            revision: main
+            depth: 1
+        - name: test
+          run: make test
+        - name: source-to-image
+          if: "body.repository.full_name == 'kubesphere/ks-devops'"
+          # shell: 'bash|sh|powershell'
+          run: |
+            make build
+            docker login -u $(secrets.DOCKER_USERNAME) -p $(secrets.DOCKER_PASSWORD)
+            docker push kubespheredev/devops-apiserver:latest
+            docker push kubespheredev/devops-controller:latest

@@ -36,10 +36,52 @@ spec:
           spec:
             description: PipelineSpec defines the desired state of Pipeline
             properties:
-              foo:
-                description: Foo is an example field of Pipeline. Edit pipeline_types.go
-                  to remove/update
-                type: string
+              event:
+                description: EventProvider string `json:"provider,omitempty"`
+                properties:
+                  filter:
+                    description: Filter refers to configuration of event filter.
+                    x-kubernetes-preserve-unknown-fields: true
+                  provider:
+                    description: EventProvider indicates what's structure of Event.
+                    type: string
+                type: object
+              jobs:
+                items:
+                  properties:
+                    if:
+                      type: string
+                    name:
+                      type: string
+                    runs-on:
+                      type: string
+                    steps:
+                      items:
+                        properties:
+                          if:
+                            type: string
+                          name:
+                            type: string
+                          run:
+                            type: string
+                          use:
+                            type: string
+                          with:
+                            additionalProperties:
+                              x-kubernetes-preserve-unknown-fields: true
+                            type: object
+                        required:
+                        - name
+                        type: object
+                      type: array
+                  required:
+                  - name
+                  - runs-on
+                  - steps
+                  type: object
+                type: array
+            required:
+            - jobs
             type: object
           status:
             description: PipelineStatus defines the observed state of Pipeline

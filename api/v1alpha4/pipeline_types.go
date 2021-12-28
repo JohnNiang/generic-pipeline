@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha4
 
 import (
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -28,8 +29,41 @@ type PipelineSpec struct {
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
-	// Foo is an example field of Pipeline. Edit pipeline_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+	// EventProvider string `json:"provider,omitempty"`
+	// +optional
+	Event *Event `json:"event,omitempty"`
+
+	Jobs []Job `json:"jobs"`
+}
+
+// Event refers to event provider and condition.
+type Event struct {
+	// EventProvider indicates what's structure of Event.
+	// +optional
+	Provider string `json:"provider,omitempty"`
+	// Filter refers to configuration of event filter.
+	// +optional
+	Filter apiextensionsv1.JSON `json:"filter,omitempty"`
+}
+
+type Job struct {
+	Name string `json:"name"`
+	// +optional
+	If     string `json:"if,omitempty"`
+	RunsOn string `json:"runs-on"`
+	Steps  []Step `json:"steps"`
+}
+
+type Step struct {
+	Name string `json:"name"`
+	// +optional
+	If string `json:"if,omitempty"`
+	// +optional
+	Use string `json:"use,omitempty"`
+	// +optional
+	With map[string]apiextensionsv1.JSON `json:"with,omitempty"`
+	// +optional
+	Run string `json:"run,omitempty"`
 }
 
 // PipelineStatus defines the observed state of Pipeline
